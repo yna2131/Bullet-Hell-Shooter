@@ -5,6 +5,8 @@ using TMPro;
 
 public class Boss : MonoBehaviour
 {
+    // 플레이어의 체력
+    public int playerHealth = 3;
     // 총알 프리팹
     public GameObject BulletPrefab;
     // 플레이어 오브젝트
@@ -32,6 +34,25 @@ public class Boss : MonoBehaviour
     {
         // 매 프레임마다 UI 텍스트를 업데이트
         updateCounter();
+    }
+
+    void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.tag == "Bullet")
+        {
+            if (collision.gameObject.tag == "Player")
+            {
+                // 플레이어의 체력을 1 감소
+                Player player = collision.gameObject.GetComponent<Player>();
+                if (player != null)
+                {
+                    player.TakeDamage();
+                }
+                
+                // 총알 삭제
+                Destroy(gameObject);
+            }
+        }
     }
 
     // 현재 생성된 전체 총알 수를 반환
@@ -93,24 +114,19 @@ private IEnumerator HeartShot()
 }
 
     // 스핀 공격을 발사하는 코루틴
-    private IEnumerator SpinShot()
-    {
-
-        while (true)
+private IEnumerator SpinShot()
+{
+        // 360도 회전하면서 총알을 발사
+        for (int i = 0; i < 360;)
         {
-            // 360도 회전하면서 총알을 발사
-            for (int i = 0; i < 360;)
-            {
-                // 4방향으로 각도를 90도씩 더해가며 총알을 발사
-                // Instantiate()는 생성된 오브젝트를 반환하므로, GetComponent()를 통해 Bullet 스크립트를 가져온다
-                Instantiate(BulletPrefab, Shooter.transform.position, Quaternion.identity).GetComponent<Bullet>().SetAngle(i);
-                Instantiate(BulletPrefab, Shooter.transform.position, Quaternion.identity).GetComponent<Bullet>().SetAngle(i + 90);
-                Instantiate(BulletPrefab, Shooter.transform.position, Quaternion.identity).GetComponent<Bullet>().SetAngle(i + 180);
-                Instantiate(BulletPrefab, Shooter.transform.position, Quaternion.identity).GetComponent<Bullet>().SetAngle(i + 270);
-                i += 5;
-                numBullets += 4;
-                yield return new WaitForSeconds(step / 10);
-            }
+            // 4방향으로 각도를 90도씩 더해가며 총알을 발사
+            // Instantiate()는 생성된 오브젝트를 반환하므로, GetComponent()를 통해 Bullet 스크립트를 가져온다
+            Instantiate(BulletPrefab, Shooter.transform.position, Quaternion.identity).GetComponent<Bullet>().SetAngle(i);
+            Instantiate(BulletPrefab, Shooter.transform.position, Quaternion.identity).GetComponent<Bullet>().SetAngle(i + 90);
+            Instantiate(BulletPrefab, Shooter.transform.position, Quaternion.identity).GetComponent<Bullet>().SetAngle(i + 180);
+            Instantiate(BulletPrefab, Shooter.transform.position, Quaternion.identity).GetComponent<Bullet>().SetAngle(i + 270);
+            i += 5;
+            numBullets += 4;
             yield return new WaitForSeconds(step / 10);
         }
 

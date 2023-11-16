@@ -8,6 +8,7 @@ public class Player : MonoBehaviour
     public float speed;
     public GameObject[] weapons;
     public bool[] hasWeapons;
+    public int health = 3;
 
     // Input Axis 값을 받을 전역변수 선언
     float hAxis;
@@ -189,6 +190,27 @@ public class Player : MonoBehaviour
         if (other.tag == "Weapon")
         {
             nearObject = null;
+        }
+    }
+
+    void OnCollisionEnter (Collision collision)
+    {
+        if (collision.gameObject.tag == "Bullet")
+        {
+            TakeDamage();
+
+            Destroy(collision.gameObject);
+        }
+    }
+    
+    public void TakeDamage()
+    {
+        // 플레이어의 체력을 1 감소
+        health--;
+
+        if (health <= 0)
+        {
+            Destroy(gameObject);
         }
     }
 }
