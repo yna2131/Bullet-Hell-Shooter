@@ -7,6 +7,7 @@ public class Boss : MonoBehaviour
 {
     // 플레이어의 체력
     public int playerHealth = 3;
+    public int bossHealth = 50;
     // 총알 프리팹
     public GameObject BulletPrefab;
     // 플레이어 오브젝트
@@ -52,6 +53,31 @@ public class Boss : MonoBehaviour
                 // 총알 삭제
                 Destroy(gameObject);
             }
+        }
+
+        if (collision.gameObject.tag == "PlayerBullet")
+        {
+            if (collision.gameObject.tag == "Boss")
+            {
+                if (boss != null)
+                {
+                    boss.ReceiveDamage();
+                }
+                
+                // 총알 삭제
+                Destroy(gameObject);
+            }
+        }
+    }
+
+    public void ReceiveDamage()
+    {
+        // 보스의 체력을 1 감소
+        bossHealth--;
+
+        if (bossHealth <= 0)
+        {
+            Destroy(gameObject);
         }
     }
 
