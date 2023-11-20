@@ -18,9 +18,10 @@ public class Player : MonoBehaviour
     bool iDown;
     bool sDown1;
     bool sDown2;
+    bool fDown;
 
     bool isSwap;
-    bool isFireReady;
+    bool isFireReady = true;
 
     Vector3 moveVec;
 
@@ -57,6 +58,7 @@ public class Player : MonoBehaviour
         hAxis = Input.GetAxisRaw("Horizontal");
         vAxis = Input.GetAxisRaw("Vertical");
         wDown = Input.GetButton("Walk");
+        fDown = Input.GetButton("Fire1");
         iDown = Input.GetButtonDown("Interaction");
         sDown1 = Input.GetButtonDown("Swap1");
         sDown2 = Input.GetButtonDown("Swap2");
@@ -73,6 +75,9 @@ public class Player : MonoBehaviour
     {
         // Vector3.normalized : 벡터의 크기를 1로 만드는 함수
         moveVec = new Vector3(hAxis, 0, vAxis).normalized;
+
+        if (isSwap || !isFireReady)
+            moveVec = Vector3.zero;
 
         // bool 형태 조건 ? true 일 때 값 : false 일 때 값 (삼항 연산자)
         transform.position += moveVec * speed * (wDown ? 0.3f : 1f) * Time.deltaTime;
@@ -112,13 +117,12 @@ public class Player : MonoBehaviour
         bool isFireReady = equipWeapon.rate < fireDelay;
 
         // 무기를 들고 있을 때, 바로 자동으로 버튼을 누르지 않고도 계속해서 공격하도록 설정
-        if (equipWeapon.type == Weapon.Type.Range)
+        if (fDown && isFireReady && !isSwap)
         {
             equipWeapon.Use();
             anim.SetTrigger("doShot");
-            fireDelay = 15f;
+            fireDelay = 0;
         }
-
     }
 
     // 무기 교체 함수
@@ -171,6 +175,12 @@ public class Player : MonoBehaviour
                 Destroy(nearObject);
             }
         }
+    }
+
+    // FixedUpdate() 함수와 함께 새로운 함수도 선언하여 호출
+    void FixedUpdate()
+    {
+        FreezeRotation();
     }
 
     // 트리거 이벤트인 OnTriggerStay, Exit 사용

@@ -17,7 +17,7 @@ public class Weapon : MonoBehaviour
     public Transform bulletCasePos;
     public GameObject bulletCase;
 
-    public float timeBetweenShots = 1f;
+    public float timeBetweenShotsRange = 10;
     
     public void Use()
     {
@@ -29,7 +29,7 @@ public class Weapon : MonoBehaviour
     IEnumerator Shot()
     {
         int shotsFired = 0;
-        int maxShots = 5; // Adjust this value based on your preference
+        int maxShots = 1; // Adjust this value based on your preference
 
         while (shotsFired < maxShots)
         {
@@ -51,6 +51,7 @@ public class Weapon : MonoBehaviour
             shotsFired++;
 
             // 발사 간격 조절
+            float timeBetweenShots = (type == Type.Range) ?  timeBetweenShotsRange : 0.5f;
             yield return new WaitForSeconds(timeBetweenShots);
         }
     }
