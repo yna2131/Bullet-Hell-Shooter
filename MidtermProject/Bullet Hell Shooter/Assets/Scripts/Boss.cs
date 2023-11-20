@@ -59,6 +59,8 @@ public class Boss : MonoBehaviour
         {
             if (collision.gameObject.tag == "Boss")
             {
+                // 보스의 체력을 1 감소
+                Boss boss = collision.gameObject.GetComponent<Boss>();
                 if (boss != null)
                 {
                     boss.ReceiveDamage();
@@ -155,7 +157,6 @@ private IEnumerator SpinShot()
             numBullets += 4;
             yield return new WaitForSeconds(step / 10);
         }
-
         StartCoroutine(HeartShot());
     }
 
